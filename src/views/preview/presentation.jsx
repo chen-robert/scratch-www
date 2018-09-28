@@ -80,6 +80,14 @@ const PreviewPresentation = ({
     onUpdate
 }) => {
     const shareDate = ((projectInfo.history && projectInfo.history.shared)) ? projectInfo.history.shared : '';
+    let totalComments = comments.length;
+    if (replies){
+        totalComments += comments.map(comment => {
+            if (replies[comment.id]) return replies[comment.id].length;
+            return 0;
+        })
+            .reduce((a, b) => a + b, 0);
+    }
     return (
         <div className="preview">
             <ShareBanner shared={isShared} />
@@ -364,7 +372,7 @@ const PreviewPresentation = ({
                                                 replies={replies && replies[comment.id] ? replies[comment.id] : []}
                                             />
                                         ))}
-                                        {comments.length < projectInfo.stats.comments &&
+                                        {totalComments < projectInfo.stats.comments &&
                                             <Button
                                                 className="button load-more-button"
                                                 onClick={onLoadMore}
